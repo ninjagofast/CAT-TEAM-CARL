@@ -1,0 +1,51 @@
+radio.onReceivedNumber(function (receivedNumber) {
+    if (receivedNumber == 0) {
+        makerbit.playMp3Track(1, 1)
+    }
+})
+input.onButtonPressed(Button.A, function () {
+})
+input.onButtonPressed(Button.AB, function () {
+    radio.sendNumber(1)
+    music.play(music.createSoundExpression(
+    WaveShape.Square,
+    400,
+    600,
+    255,
+    0,
+    100,
+    SoundExpressionEffect.Warble,
+    InterpolationCurve.Linear
+    ), music.PlaybackMode.UntilDone)
+})
+input.onButtonPressed(Button.B, function () {
+})
+input.onGesture(Gesture.Shake, function () {
+})
+input.onLogoEvent(TouchButtonEvent.Pressed, function () {
+    radio.sendNumber(0)
+})
+radio.setGroup(1)
+let volume = 100
+makerbit.connectSerialMp3(DigitalPin.P1, DigitalPin.P13)
+makerbit.setMp3Volume(30)
+let index = 0
+for (let index = 0; index <= 1; index++) {
+    makerbit.playMp3TrackFromFolder(3, 1, Mp3Repeat.No)
+    index += 1
+}
+makerbit.runMp3Command(Mp3Command.PAUSE)
+basic.forever(function () {
+    music.setVolume(volume)
+    led.plotBarGraph(
+    volume,
+    255
+    )
+    basic.showIcon(IconNames.Heart)
+    basic.showIcon(IconNames.SmallHeart)
+    if (input.isGesture(Gesture.Shake)) {
+        makerbit.runMp3Command(Mp3Command.RESUME)
+    } else {
+        makerbit.runMp3Command(Mp3Command.PAUSE)
+    }
+})
